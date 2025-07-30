@@ -1,8 +1,8 @@
 from tkinter import *
 
 def Login(dict):
-    username = float(UsernameEntry.get())
-    password = float(PasswordEntry.get())
+    username = UsernameEntry.get()
+    password = PasswordEntry.get()
     try:
         if username == dict["Login"]["Username"] and password == dict["Login"]["Password"]:
             print("meow")
@@ -10,8 +10,6 @@ def Login(dict):
             print("woof woof")
     except ValueError:
         print("moo")
-
-
 
 PasswordDictionary = {
     "Login":{
@@ -40,7 +38,7 @@ PasswordEntry = Entry(LoginFrame, justify = CENTER, font = "Arial 15")
 PasswordEntry.grid(row = 2, column = 1, sticky = "nsew")
 #button to confirm username and password
 LoginButton = Button(LoginFrame, text = "Login", width = 10, height = 2,
-                          command = Login(PasswordDictionary), bg = "grey")
+                          command = lambda: Login(PasswordDictionary), bg = "grey")
 LoginButton.grid(row = 3, column = 0, sticky = "nsew", padx = 5, pady = 5, columnspan = 2)
 
 
