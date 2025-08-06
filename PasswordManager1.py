@@ -17,13 +17,21 @@ def Return():
     LoginedFrame.pack_forget()
     LoginFrame.pack(fill="both", expand=True)
 
+def ViewPasswords():
+    print("meow wow")
+
+def AddRemovePasswords():
+    print("arf arf")
+
 PasswordDictionary = {
     "Login":{
     "Username":"User",
     "Password":"Pass"}
     }
+
 root = Tk()
 root.title("Password Manager")
+
 #login Frame
 LoginFrame = Frame(root)
 LoginFrame.pack(fill="both", expand=True)
@@ -47,14 +55,21 @@ LoginButton = Button(LoginFrame, text = "Login", width = 10, height = 2,
                           command = lambda: Login(PasswordDictionary), bg = "grey")
 LoginButton.grid(row = 3, column = 0, sticky = "nsew", padx = 5, pady = 5, columnspan = 2)
 
-
 #Frame which will appear upon successful login
 LoginedFrame = Frame(root)
-SuccessLabel = Label(LoginedFrame,text = "Login Successful", font = "Arial 15 bold")
-SuccessLabel.grid(row = 0, column = 0)
+SuccessLabel = Label(LoginedFrame,text = "Main Menu", font = "Arial 20 bold")
+SuccessLabel.grid(row = 0, column = 0, columnspan = 2)
+#Access password button
+AccessButton = Button(LoginedFrame, text = "View Passwords", width = 18, height = 3,
+                          command = ViewPasswords)
+AccessButton.grid(row = 1, column = 0)
+#Add/remove password button
+AddRemoveButton = Button(LoginedFrame, text = "Add/Remove Passwords", width = 18, height = 3,
+                          command = AddRemovePasswords)
+AddRemoveButton.grid(row = 1, column = 1)
 #Back to login button
 BackButton = Button(LoginedFrame, text = "Back To Login", width = 10, height = 2,
                           command = Return)
-BackButton.grid(row = 1, column = 0)
+BackButton.grid(row = 2, column = 0, columnspan = 2)
 
 root.mainloop()
