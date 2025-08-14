@@ -19,10 +19,10 @@ def Return():
     LoginFrame.pack(fill="both", expand=True)
 
 def ViewPasswords():
-    print("meow wow")
+    print("not working in this component")
 
 def AddRemovePasswords():
-    print("arf arf")
+    print("not working in this component")
 
 PasswordDictionary = {
     "Login":{
