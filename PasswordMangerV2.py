@@ -6,17 +6,24 @@ def Return():
     ViewFrame.pack_forget()
     LoginedFrame.pack(fill="both", expand=True)
 
-def ViewPasswordSwitch():
-    data = data.get()
-    Choice = ViewChosen.get()
-    ViewFrame.pack_forget()
-    ViewPassFrame.pack(fill="both", expand=True)
-    #Makes label
-    ViewPassLabel.config(text=f"Username and Password for {Choice}")
-    ViewUser.config(text = f"Username/Email: {data[Choice]}")
+def ReturnToView():
+    ViewPassFrame.pack_forget()
+    ViewFrame.pack(fill="both", expand=True)
 
-def Test():
-    print(ViewChosen.get())
+def ViewPasswordSwitch():
+    Choice = ViewChosen.get()
+    if Choice != "          ":
+        ViewFrame.pack_forget()
+        ViewPassFrame.pack(fill="both", expand=True)
+        #Edits label for top text
+        ViewPassLabel.config(text=f"Username and Password for {Choice}")
+        #Edits Label for Username/Email
+        ViewUser.config(text = f"Username/Email: {data[Choice]['Email']}")
+        #Edits Label for Password
+        ViewPass.config(text = f"Password: {data[Choice]['Password']}")
+    else:
+        ElseLabel = Label(ViewFrame, font = "Arial 8", text = "You need to select something for the select button to work.")
+        ElseLabel.grid(row = 4, column = 0)
 
 def ViewPasswords():
     LoginedFrame.pack_forget()
@@ -25,7 +32,6 @@ def ViewPasswords():
 def AddRemovePasswords():
     print("To be included in v3")
 #Sets up root and name of program
-meow = " "
 root = Tk()
 root.title("Password Manager")
 #Opens the json file containing the saved passwords and usernames
@@ -68,14 +74,22 @@ ViewSelectButton.grid(row = 2, column = 0)
 ViewBackButton = Button(ViewFrame, text = "Back", width = 10, height = 2,
                           command = Return)
 ViewBackButton.grid(row = 3, column = 0)
+#Text which will appear when user does not select anything before pressing the select button
 
 #Frame which appears to show selected password and username
 ViewPassFrame = Frame(root)
 ViewPassLabel = Label(ViewPassFrame, font = "Arial 20 bold")
 ViewPassLabel.grid(row = 0, column = 0)
-
-ViewUser = Label(ViewPassFrame, font = "Arial 20 bold")
+#Label setup for the username/email
+ViewUser = Label(ViewPassFrame, font = "Arial 15")
 ViewUser.grid(row = 1, column = 0)
+#Label setup for the password
+ViewPass = Label(ViewPassFrame, font = "Arial 15")
+ViewPass.grid(row = 2, column = 0)
+#Back Button
+ViewPassBackButton = Button(ViewPassFrame, text = "Back", width = 10, height = 2,
+                          command = ReturnToView)
+ViewPassBackButton.grid(row = 3, column = 0)
 
 
 root.mainloop()
