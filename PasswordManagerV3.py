@@ -49,6 +49,8 @@ def ConfirmPassword():
     if not Account:
         return
     data[Account] = {"Email": Username, "Password": Password}
+    IfLabel = Label(AddPassFrame, font = "Arial 8", text = "Account Information Added Successfully")
+    IfLabel.grid(row = 6, column = 0, columnspan = 2)
     refresh_dropdowns()
 
 def ConfirmRemoval():
