@@ -29,44 +29,43 @@ def ReturnToView():
     ViewPassFrame.pack_forget()
     ViewFrame.pack(fill="both", expand=True)    
 
-
 def ViewPasswordSwitch():
     Choice = ViewChosen.get()
-    if Choice != "          ":
+    if Choice:
         ViewFrame.pack_forget()
         ViewPassFrame.pack(fill="both", expand=True)
-        #Edits label for top text
         ViewPassLabel.config(text=f"Username and Password for {Choice}")
-        #Edits Label for Username/Email
         ViewUser.config(text = f"Username/Email: {data[Choice]['Email']}")
-        #Edits Label for Password
         ViewPass.config(text = f"Password: {data[Choice]['Password']}")
     else:
-        ElseLabel = Label(ViewFrame, font = "Arial 8", text = "You need to select something for the select button to work.")
+        ElseLabel = Label(ViewFrame, font = "Arial 8", 
+                          text = "You need to select something for the select button to work.")
         ElseLabel.grid(row = 4, column = 0)
 
 def ConfirmPassword():
     Username = AddUsernameEntry.get()
     Password = AddPasswordEntry.get()
-    Account = AddAccountEntry.get()
-    NewUserPass = {
-    Account: {
-        "Email": Username, "Password": Password}
-    }
-    data.update(NewUserPass)
+    Account  = AddAccountEntry.get()
+    if not Account:
+        return
+    data[Account] = {"Email": Username, "Password": Password}
+    refresh_dropdowns()
 
 def ConfirmRemoval():
     Choice = RemoveChosen.get()
-    if Choice != "                                 ":
-        print(Choice)
+    if Choice:
         data.pop(Choice, None)
-        IfLabel = Label(RemovePassFrame, font = "Arial 8", text = "Account Information Deleted Successfully")
+        refresh_dropdowns()
+        IfLabel = Label(RemovePassFrame, font = "Arial 8", 
+                        text = "Account Information Deleted Successfully")
         IfLabel.grid(row = 5, column = 0)
     else:
-        ElseLabel = Label(RemovePassFrame, font = "Arial 8", text = "You need to select something for the confirm button to work.")
+        ElseLabel = Label(RemovePassFrame, font = "Arial 8", 
+                          text = "You need to select something for the confirm button to work.")
         ElseLabel.grid(row = 4, column = 0)
 
 def ViewPasswords():
+    refresh_dropdowns()
     LoginedFrame.pack_forget()
     ViewFrame.pack(fill="both", expand=True)
 
@@ -79,6 +78,7 @@ def AddPassword():
     AddPassFrame.pack(fill="both", expand=True)
 
 def RemovePassword():
+    refresh_dropdowns()
     MenuFrame.pack_forget()
     RemovePassFrame.pack(fill="both", expand=True)
 
@@ -87,7 +87,13 @@ def ReturnToMenu():
     RemovePassFrame.pack_forget()
     MenuFrame.pack(fill="both", expand=True)
 
-#Dictionary for the login component
+def refresh_dropdowns():
+    ViewOptions['values'] = list(data.keys())
+    RemoveOptions['values'] = list(data.keys())
+    ViewChosen.set("")
+    RemoveChosen.set("")
+
+#Dictionary for login component
 PasswordDictionary = {
     "Login":{
     "Username":"User",
@@ -98,12 +104,13 @@ PasswordDictionary = {
 root = Tk()
 root.title("Password Manager")
 
-#Opens the json file containing the saved passwords and usernames
+#Opens the json file containing the saved passwords and usernames for use
 with open("Passwords.json") as f:
     data = json.load(f)
 
 #login Frame
 LoginFrame = Frame(root)
+LoginFrame.pack(fill="both", expand=True)
 #text at top of login frame
 LoginLabel = Label(LoginFrame,text = "Login Form", font = "Arial 20 bold")
 LoginLabel.grid(row = 0, column = 0, columnspan = 2)
@@ -134,8 +141,6 @@ UnbackButton.grid(row = 2, column = 0, columnspan = 2)
 
 #Frame which will appear upon successful login
 LoginedFrame = Frame(root)
-#Temp for testing
-LoginedFrame.pack(fill="both", expand=True)
 MenuLabel = Label(LoginedFrame,text = "Main Menu", font = "Arial 20 bold")
 MenuLabel.grid(row = 0, column = 0, columnspan = 2)
 #Access password button
@@ -155,11 +160,11 @@ BackButton.grid(row = 2, column = 0, columnspan = 2)
 ViewFrame = Frame(root)
 ViewLabel = Label(ViewFrame ,text = "Passwords", font = "Arial 20 bold")
 ViewLabel.grid(row = 0, column = 0)
-#Makes the choices for the drop down menu the keys to the dictionary json file which are the account names
-ViewChoices = data
-ViewDefault = "          "
+
+#Replaced the previous drop down box with a cmbobox as it works better
 ViewChosen = StringVar()
-ViewOptions = ttk.OptionMenu(ViewFrame, ViewChosen, ViewDefault, *ViewChoices)
+ViewOptions = ttk.Combobox(ViewFrame, textvariable=ViewChosen, state="readonly")
+ViewOptions['values'] = list(data.keys())
 ViewOptions.grid(row = 1, column = 0)
 #Button for confirming the selected account
 ViewSelectButton = Button(ViewFrame, text = "Select", width = 10, height = 2,
@@ -169,7 +174,6 @@ ViewSelectButton.grid(row = 2, column = 0)
 ViewBackButton = Button(ViewFrame, text = "Back", width = 10, height = 2,
                           command = Return)
 ViewBackButton.grid(row = 3, column = 0)
-#Text which will appear when user does not select anything before pressing the select button
 
 #Frame which appears to show selected password and username
 ViewPassFrame = Frame(root)
@@ -231,16 +235,15 @@ AddBackButton = Button(AddPassFrame, text = "Go Back", width = 15, height = 2,
                                command = ReturnToMenu)
 AddBackButton.grid(row = 5, column = 0, columnspan = 2)
 
-
 #Frame which appears when remove password is selected
 RemovePassFrame = Frame(root)
 RemovePassLabel = Label(RemovePassFrame, text = "Remove Password", font = "Arial 20 bold")
 RemovePassLabel.grid(row = 0, column = 0)
-#drop down menu to select the account
-RemoveChoices = data
-RemoveDefault = "                                 "
+
+#Combobox instead of optionmenu
 RemoveChosen = StringVar()
-RemoveOptions = ttk.OptionMenu(RemovePassFrame, RemoveChosen, RemoveDefault, *RemoveChoices)
+RemoveOptions = ttk.Combobox(RemovePassFrame, textvariable=RemoveChosen, state="readonly")
+RemoveOptions['values'] = list(data.keys())
 RemoveOptions.grid(row = 1, column = 0)
 #Button for confirming the account to remove
 ViewSelectButton = Button(RemovePassFrame, text = "Confirm", width = 10, height = 2,
@@ -252,5 +255,6 @@ RemoveBackButton = Button(RemovePassFrame, text = "Go Back", width = 10, height 
 RemoveBackButton.grid(row = 3, column = 0, columnspan = 2)
 
 root.mainloop()
+
 with open("Passwords.json", "w") as f:
     json.dump(data,f,indent=4)
